@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeShift | High-Risk Industrial Safety & Disaster Relief Portal</title>
+  <meta name="description" content="SafeShift - Next-generation high-risk industrial safety monitoring, zero-gravity rescue dispatch, and quantum weight-nullification logistics portal.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            charcoal: {
+              950: '#070a0f',
+              900: '#0c1017',
+              850: '#111722',
+              800: '#161f2e',
+              700: '#222f46',
+              600: '#324361'
+            },
+            neon: {
+              cyan: '#00f0ff',
+              amber: '#ffaa00',
+              emerald: '#00ff9d',
+              rose: '#ff2a6d'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+            display: ['Orbitron', 'Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Sci-Fi HUD Stylesheet -->
+  <link rel="stylesheet" href="css/custom.css">
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-black">
+
+  <!-- TOP STATUS & SYSTEM INDICATOR BAR -->
+  <header class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-cyan-500/20 shadow-[0_4px_25px_rgba(0,0,0,0.6)]">
+    <!-- Top System Telemetry Marquee/Indicator -->
+    <div class="px-4 py-1.5 bg-slate-900/80 border-b border-slate-800/80 text-[11px] font-mono flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center space-x-4">
+        <!-- Gravity Field Status -->
+        <div class="flex items-center space-x-1.5">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span class="text-slate-400">GRAVITY FIELD:</span>
+          <strong class="text-cyan-400 glow-cyan font-bold">STABLE [99.98%]</strong>
+        </div>
+
+        <span class="text-slate-700 hidden md:inline">|</span>
+
+        <!-- Active Units -->
+        <div class="flex items-center space-x-1.5">
+          <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+          <span class="text-slate-400">ACTIVE UNITS:</span>
+          <strong class="text-amber-400 glow-amber font-bold">42 / 45 DEPLOYED</strong>
+        </div>
+
+        <span class="text-slate-700 hidden lg:inline">|</span>
+
+        <!-- Zero-Harm Streak -->
+        <div class="hidden lg:flex items-center space-x-1.5">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span class="text-slate-400">SAFETY STREAK:</span>
+          <strong class="text-emerald-400 glow-emerald font-bold">418 DAYS ZERO-INCIDENT</strong>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <!-- Mission Elapsed -->
+        <div class="flex items-center space-x-1.5">
+          <i data-lucide="timer" class="w-3.5 h-3.5 text-cyan-400"></i>
+          <span class="text-slate-400">MISSION:</span>
+          <strong id="mission-elapsed-time" class="text-slate-200 font-bold">T+ 14:38:22</strong>
+        </div>
+
+        <span class="text-slate-700 hidden sm:inline">|</span>
+
+        <!-- Live UTC -->
+        <div class="hidden sm:flex items-center space-x-1.5">
+          <i data-lucide="globe" class="w-3.5 h-3.5 text-slate-400"></i>
+          <span id="live-utc-clock" class="text-slate-400">--:--:-- UTC</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="window.app.switchTab('rescue')">
+        <div class="relative w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500/30 to-blue-600/10 border border-cyan-400/50 flex items-center justify-center shadow-[0_0_15px_rgba(0,240,255,0.3)]">
+          <i data-lucide="radio" class="w-5 h-5 text-cyan-400 animate-spin" style="animation-duration: 12s;"></i>
+          <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-cyan-400 ring-2 ring-slate-950"></span>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="font-display font-black text-xl tracking-wider text-slate-100 glow-cyan">SAFESHIFT</span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-mono uppercase bg-cyan-950 text-cyan-300 border border-cyan-500/40">v3.4-Q</span>
+          </div>
+          <p class="text-[10px] font-mono text-slate-400 tracking-wider uppercase">High-Risk Industrial Safety & Disaster Relief Command</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center space-x-1 sm:space-x-2 bg-slate-900/90 p-1.5 rounded-xl border border-slate-800">
+        <button data-tab="rescue" class="tab-btn active px-3.5 py-2 rounded-lg text-xs font-mono font-bold tracking-wide flex items-center space-x-2 transition border border-transparent">
+          <i data-lucide="life-buoy" class="w-4 h-4 text-cyan-400"></i>
+          <span>Zero-G Rescue</span>
+        </button>
+        <button data-tab="debris" class="tab-btn text-slate-400 hover:text-slate-200 px-3.5 py-2 rounded-lg text-xs font-mono font-bold tracking-wide flex items-center space-x-2 transition border border-transparent">
+          <i data-lucide="hammer" class="w-4 h-4 text-amber-400"></i>
+          <span>Debris Clearing</span>
+        </button>
+        <button data-tab="weight" class="tab-btn text-slate-400 hover:text-slate-200 px-3.5 py-2 rounded-lg text-xs font-mono font-bold tracking-wide flex items-center space-x-2 transition border border-transparent">
+          <i data-lucide="weight" class="w-4 h-4 text-emerald-400"></i>
+          <span>Weight-Nullifier</span>
+        </button>
+      </nav>
+
+      <!-- Right Action Tools -->
+      <div class="flex items-center space-x-2.5">
+        <!-- Audio Synthesizer Toggle -->
+        <button id="sound-toggle-btn" onclick="window.app.toggleAudio()" 
+                class="px-3 py-1.5 rounded-lg flex items-center space-x-1.5 bg-slate-800/80 hover:bg-slate-700/80 text-cyan-300 border border-cyan-500/30 transition text-xs font-mono">
+          <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+          <span id="sound-toggle-text">AUDIO: ON</span>
+        </button>
+
+        <!-- Quick Emergency Dispatch Button -->
+        <button onclick="window.app.openDispatchModal()" 
+                class="px-3.5 py-2 rounded-lg flex items-center space-x-1.5 bg-rose-600 hover:bg-rose-500 text-white font-display font-semibold text-xs tracking-wider uppercase shadow-[0_0_15px_rgba(255,42,109,0.4)] transition">
+          <i data-lucide="alert-triangle" class="w-3.5 h-3.5 animate-bounce"></i>
+          <span>Dispatch Unit</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- EMERGENCY HAZARD BANNER -->
+  <div class="bg-gradient-to-r from-amber-950/60 via-slate-900/90 to-amber-950/60 border-y border-amber-500/30 px-4 py-2">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+      <div class="flex items-center space-x-2 text-amber-300">
+        <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+        <strong class="font-bold">ACTIVE RELIEF OPERATION:</strong>
+        <span class="text-slate-300">Bio-Dome & Sub-Level Ruins (Sector 7) · 42 Antigravity Units on Field · Mass Displacement: Active</span>
+      </div>
+      <div class="flex items-center space-x-3 text-slate-400">
+        <span>Defcon Level: <strong class="text-amber-400 font-bold">ALPHA-2</strong></span>
+        <span>Grid Flux: <strong class="text-cyan-400 font-bold">98.4% Harmonized</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APPLICATION CONTENT VIEWS -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: ZERO-GRAVITY RESCUE DISPATCH -->
+    <!-- ========================================== -->
+    <section id="view-rescue" class="tab-view space-y-6">
+      
+      <!-- Section Header -->
+      <div class="flex flex-wrap items-center justify-between gap-4 pb-2 border-b border-slate-800">
+        <div>
+          <h2 class="font-display font-bold text-2xl text-slate-100 flex items-center space-x-2">
+            <span class="text-cyan-400">ZERO-GRAVITY</span>
+            <span>RESCUE DISPATCH</span>
+          </h2>
+          <p class="text-xs text-slate-400 font-mono mt-1">Autonomous Antigravity Stretchers (AGS) · Inertia-Nullified Patient Extraction · Smooth Telemetry Grid</p>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button onclick="window.disasterMap.toggleRadar()" class="px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono border border-slate-700 flex items-center space-x-1">
+            <i data-lucide="radar" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>Toggle Radar</span>
+          </button>
+          <button onclick="window.disasterMap.toggleContours()" class="px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono border border-slate-700 flex items-center space-x-1">
+            <i data-lucide="layers" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span>Topography</span>
+          </button>
+          <button onclick="window.app.openDispatchModal()" class="px-3.5 py-1.5 rounded bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 text-xs font-mono font-bold border border-cyan-500/50 flex items-center space-x-1 shadow-[0_0_12px_rgba(0,240,255,0.25)]">
+            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+            <span>Deploy Stretcher</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tactical Grid: Map & Live Telemetry -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left: Interactive Disaster Zone Map -->
+        <div class="lg:col-span-7 xl:col-span-8 hud-card tactical-border p-4 flex flex-col">
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-800/80">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="crosshair" class="w-4 h-4 text-cyan-400"></i>
+              <h3 class="font-display font-semibold text-sm tracking-wide text-slate-200">TACTICAL DISASTER GRID (SECTOR 7)</h3>
+            </div>
+            <div class="flex items-center space-x-2 text-[11px] font-mono">
+              <span id="map-mouse-coords" class="text-slate-400">LAT: 34.0522°N | LON: -118.2437°W | ELEV: +18m</span>
+            </div>
+          </div>
+
+          <!-- Interactive Canvas Map Container -->
+          <div class="relative w-full rounded-lg overflow-hidden border border-slate-800/90 bg-slate-950 flex-1 min-h-[460px]">
+            <canvas id="disaster-map-canvas" class="w-full h-full block"></canvas>
+
+            <!-- Map HUD Legend Floating in Corner -->
+            <div class="absolute bottom-3 left-3 bg-slate-900/90 backdrop-blur-md p-2.5 rounded-lg border border-slate-800 text-[11px] font-mono space-y-1.5 pointer-events-auto">
+              <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Tactical Legend</div>
+              <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                <span class="text-slate-300">En Route Stretcher</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                <span class="text-slate-300">Evacuating Survivor</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
+                <span class="text-slate-300">Survivor Distress Beacon</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                <span class="text-slate-300">Triage Depot / Standby</span>
+              </div>
+            </div>
+
+            <!-- Map Quick Hints -->
+            <div class="absolute top-3 right-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded border border-slate-800 text-[10px] font-mono text-cyan-300">
+              CLICK ANY UNIT OR SECTOR TO INSPECT
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Real-time Telemetry & Patient Vitals Feed -->
+        <div class="lg:col-span-5 xl:col-span-4 space-y-5 flex flex-col">
+          
+          <!-- Selected Stretcher Telemetry Card -->
+          <div class="hud-card tactical-border p-4 space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div>
+                <div class="flex items-center space-x-2">
+                  <span id="telemetry-unit-id" class="font-display font-black text-lg text-cyan-400 glow-cyan">AGS-101</span>
+                  <span id="telemetry-callsign" class="text-xs text-slate-400 font-mono">(AERO-ANGEL 1)</span>
+                </div>
+                <div class="text-xs text-slate-400 font-mono">Dest: <span id="telemetry-sector" class="text-slate-200">Sector B: Bio-Dome Collapse</span></div>
+              </div>
+              <span id="telemetry-status-badge" class="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold tracking-wider bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 glow-cyan">
+                EN ROUTE
+              </span>
+            </div>
+
+            <!-- Patient Profile -->
+            <div class="p-2.5 bg-slate-950/70 rounded-lg border border-slate-800 flex items-center justify-between text-xs font-mono">
+              <span class="text-slate-400">Assigned Patient:</span>
+              <span id="telemetry-patient-name" class="text-slate-200 font-semibold">Survivor #04 (Trauma / Spinal)</span>
+            </div>
+
+            <!-- Real-Time ECG Waveform Canvas -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between text-xs font-mono">
+                <span class="text-slate-400 flex items-center space-x-1.5">
+                  <i data-lucide="activity" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>Patient ECG Waveform (Live Lead-II)</span>
+                </span>
+                <span id="metric-hr" class="text-cyan-400 font-bold">78 BPM</span>
+              </div>
+              <div class="h-20 rounded-lg overflow-hidden border border-cyan-500/30 bg-slate-950">
+                <canvas id="ecg-canvas" class="w-full h-full block"></canvas>
+              </div>
+            </div>
+
+            <!-- Primary Transport Metrics Grid -->
+            <div class="grid grid-cols-2 gap-3">
+              <!-- Zero Jostle Index -->
+              <div class="p-3 rounded-lg bg-slate-950/80 border border-slate-800">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-[11px] font-mono text-slate-400">ZERO JOSTLE INDEX</span>
+                  <i data-lucide="feather" class="w-3.5 h-3.5 text-cyan-400"></i>
+                </div>
+                <div id="metric-jostle" class="text-xl font-mono font-black text-cyan-400 glow-cyan">0.0021 G</div>
+                <div class="text-[10px] text-emerald-400 font-mono mt-0.5">● 99.88% Inertia Cancelled</div>
+              </div>
+
+              <!-- Elevation Stability -->
+              <div class="p-3 rounded-lg bg-slate-950/80 border border-slate-800">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-[11px] font-mono text-slate-400">ELEVATION LOCK</span>
+                  <i data-lucide="compass" class="w-3.5 h-3.5 text-amber-400"></i>
+                </div>
+                <div id="metric-elevation" class="text-xl font-mono font-black text-amber-400 glow-amber">1.45 m</div>
+                <div class="text-[10px] text-slate-400 font-mono mt-0.5">Tolerance: ±0.005m</div>
+              </div>
+            </div>
+
+            <!-- Secondary Patient Telemetry Badges -->
+            <div class="grid grid-cols-4 gap-2 text-center text-xs font-mono bg-slate-950/60 p-2.5 rounded-lg border border-slate-800">
+              <div>
+                <span class="text-[10px] text-slate-500 block">BP</span>
+                <span id="metric-bp" class="text-slate-200 font-bold">122/78</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-slate-500 block">SpO2</span>
+                <span id="metric-spo2" class="text-cyan-400 font-bold">99%</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-slate-500 block">TEMP</span>
+                <span id="metric-temp" class="text-slate-200 font-bold">36.9°C</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-slate-500 block">ETA</span>
+                <span id="metric-eta" class="text-amber-400 font-bold">3.2 min</span>
+              </div>
+            </div>
+
+            <!-- Quantum Flux Battery Gauge -->
+            <div class="space-y-1 text-xs font-mono">
+              <div class="flex justify-between">
+                <span class="text-slate-400">Flux Capacitor Battery:</span>
+                <span id="metric-battery" class="text-slate-200 font-bold">86.4%</span>
+              </div>
+              <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+                <div id="metric-battery-bar" class="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 transition-all duration-300" style="width: 86.4%;"></div>
+              </div>
+            </div>
+
+            <!-- Gyro Tilt & Dampening Efficiency -->
+            <div class="flex justify-between text-[11px] font-mono text-slate-400 pt-2 border-t border-slate-800/80">
+              <span>Gyro Tilt: <strong id="metric-tilt" class="text-slate-200">R:0.04° P:-0.02°</strong></span>
+              <span>Damping: <strong id="metric-damping" class="text-emerald-400">99.88%</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Antigravity Stretcher Fleet Control Panel -->
+      <div class="hud-card p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-slate-800">
+          <div>
+            <h3 class="font-display font-bold text-base text-slate-100 flex items-center space-x-2">
+              <i data-lucide="shield" class="w-4 h-4 text-cyan-400"></i>
+              <span>ANTIGRAVITY STRETCHER FLEET STATUS & CONTROLS</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono mt-0.5">Autonomous Fleet Tracking · Live Damping Configuration · Rapid Evacuation Vectors</p>
+          </div>
+
+          <!-- Filter buttons -->
+          <div class="flex items-center space-x-1.5 text-xs font-mono">
+            <button onclick="window.telemetryEngine.renderStretcherList('ALL')" class="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">ALL (6)</button>
+            <button onclick="window.telemetryEngine.renderStretcherList('EN ROUTE')" class="px-3 py-1 rounded bg-cyan-950/60 hover:bg-cyan-900/60 text-cyan-300 border border-cyan-500/40">EN ROUTE</button>
+            <button onclick="window.telemetryEngine.renderStretcherList('EVACUATING')" class="px-3 py-1 rounded bg-amber-950/60 hover:bg-amber-900/60 text-amber-300 border border-amber-500/40">EVACUATING</button>
+            <button onclick="window.telemetryEngine.renderStretcherList('STANDBY')" class="px-3 py-1 rounded bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-300 border border-emerald-500/40">STANDBY</button>
+          </div>
+        </div>
+
+        <!-- Stretcher Unit Cards Grid -->
+        <div id="stretcher-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Populated by telemetryEngine.renderStretcherList() -->
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- TAB 2: DEBRIS CLEARING DASHBOARD -->
+    <!-- ========================================== -->
+    <section id="view-debris" class="tab-view hidden space-y-6">
+      
+      <!-- Section Header -->
+      <div class="flex flex-wrap items-center justify-between gap-4 pb-2 border-b border-slate-800">
+        <div>
+          <h2 class="font-display font-bold text-2xl text-slate-100 flex items-center space-x-2">
+            <span class="text-amber-400">DEBRIS CLEARING</span>
+            <span>LOGISTICS DASHBOARD</span>
+          </h2>
+          <p class="text-xs text-slate-400 font-mono mt-1">Zero-Emission Heavy Wreckage Levitation · Gravitational-Nullification Emitters · Structural Harmonization</p>
+        </div>
+
+        <div class="flex items-center space-x-3 text-xs font-mono">
+          <span class="px-3 py-1.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 flex items-center space-x-1.5">
+            <i data-lucide="leaf" class="w-3.5 h-3.5"></i>
+            <span>100% ZERO CARBON EMISSION</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Key Performance Metrics Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Card 1: Total Tonnage Cleared -->
+        <div class="hud-card p-4 tactical-border">
+          <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+            <span>TOTAL TONNAGE CLEARED</span>
+            <i data-lucide="scale" class="w-4 h-4 text-cyan-400"></i>
+          </div>
+          <div id="metric-tonnage-cleared" class="text-2xl font-mono font-black text-cyan-400 glow-cyan">1,842.5 T</div>
+          <p class="text-[11px] font-mono text-emerald-400 mt-1 flex items-center space-x-1">
+            <i data-lucide="trending-up" class="w-3 h-3"></i>
+            <span>+0.3 Tonnes / 5 sec continuous</span>
+          </p>
+        </div>
+
+        <!-- Card 2: Carbon Emissions Saved -->
+        <div class="hud-card p-4 tactical-border">
+          <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+            <span>CARBON EMISSIONS SAVED</span>
+            <i data-lucide="trees" class="w-4 h-4 text-emerald-400"></i>
+          </div>
+          <div id="metric-carbon-saved" class="text-2xl font-mono font-black text-emerald-400 glow-emerald">497.5 MT</div>
+          <p class="text-[11px] font-mono text-slate-400 mt-1">vs. Tier-4 Heavy Diesel Cranes</p>
+        </div>
+
+        <!-- Card 3: Active Lift Fields -->
+        <div class="hud-card p-4 tactical-border tactical-border-amber">
+          <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+            <span>ACTIVE LIFT FIELDS</span>
+            <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
+          </div>
+          <div id="metric-active-fields" class="text-2xl font-mono font-black text-amber-400 glow-amber">4 / 5 Active</div>
+          <p class="text-[11px] font-mono text-cyan-400 mt-1">80% Field Capacity Operating</p>
+        </div>
+
+        <!-- Card 4: Superconducting Grid Draw -->
+        <div class="hud-card p-4 tactical-border">
+          <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+            <span>QUANTUM GRID DRAW</span>
+            <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i>
+          </div>
+          <div id="metric-power-draw" class="text-2xl font-mono font-black text-slate-200">65.4 MW</div>
+          <p class="text-[11px] font-mono text-slate-400 mt-1">96.8% Superconducting Efficiency</p>
+        </div>
+      </div>
+
+      <!-- Main Debris Management: Simulation & Sector Controls -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left: Visual Antigravity Beam Lift Simulator -->
+        <div class="lg:col-span-5 hud-card tactical-border p-4 flex flex-col">
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-800">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="orbit" class="w-4 h-4 text-cyan-400"></i>
+              <h3 class="font-display font-semibold text-sm text-slate-200">GRAVITY-NULLIFICATION CHAMBER SIMULATOR</h3>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-950 text-cyan-300 border border-cyan-500/40">
+              LIVE FLUX
+            </span>
+          </div>
+
+          <!-- Canvas for beam simulation -->
+          <div class="relative w-full rounded-lg overflow-hidden border border-slate-800 bg-slate-950 flex-1 min-h-[260px]">
+            <canvas id="debris-beam-canvas" class="w-full h-full block"></canvas>
+            
+            <div class="absolute bottom-3 left-3 right-3 bg-slate-900/90 backdrop-blur-md p-2.5 rounded border border-slate-800 text-[11px] font-mono flex justify-between">
+              <div>
+                <span class="text-slate-500">Acoustic Damping:</span>
+                <span class="text-cyan-400 font-bold"> -38 dB (Silent)</span>
+              </div>
+              <div>
+                <span class="text-slate-500">Exclusion Perimeter:</span>
+                <span class="text-amber-400 font-bold"> 15m Radius</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 p-3 bg-slate-950/60 rounded border border-slate-800/80 text-xs font-mono space-y-1">
+            <div class="text-slate-400 font-semibold">Inertial Decoupling Technology:</div>
+            <p class="text-slate-300 text-[11px] leading-relaxed">
+              SafeShift emitters produce a localized graviton phase shift that neutralizes 99.99% of gravitational attraction on reinforced concrete & twisted rebar, enabling swift removal without dust dispersion or heavy machinery diesel pollution.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: Clearance Sectors List & Controls -->
+        <div class="lg:col-span-7 hud-card p-4 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div>
+              <h3 class="font-display font-bold text-sm text-slate-100 flex items-center space-x-2">
+                <i data-lucide="layers" class="w-4 h-4 text-amber-400"></i>
+                <span>ACTIVE CLEARANCE SECTORS & BEAM CONTROLS</span>
+              </h3>
+              <p class="text-xs text-slate-400 font-mono mt-0.5">Toggle Beams · Drag Sliders to Adjust Lift Intensity · Harmonic Tuning</p>
+            </div>
+          </div>
+
+          <!-- Sector Cards List -->
+          <div id="debris-sectors-container" class="space-y-3">
+            <!-- Populated by debrisEngine.renderSectorsList() -->
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- TAB 3: INDUSTRIAL WEIGHT-NULLIFICATION TRACKER -->
+    <!-- ========================================== -->
+    <section id="view-weight" class="tab-view hidden space-y-6">
+      
+      <!-- Section Header -->
+      <div class="flex flex-wrap items-center justify-between gap-4 pb-2 border-b border-slate-800">
+        <div>
+          <h2 class="font-display font-bold text-2xl text-slate-100 flex items-center space-x-2">
+            <span class="text-emerald-400">INDUSTRIAL WEIGHT-NULLIFICATION</span>
+            <span>TRACKER</span>
+          </h2>
+          <p class="text-xs text-slate-400 font-mono mt-1">Safety Compliance Software · Quantum Load-Reduction Monitor · Ergonomic Zero-Strain Operations</p>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button onclick="window.weightEngine.triggerHazardDrill()" 
+                  class="px-3.5 py-1.5 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-mono font-bold border border-amber-500/50 flex items-center space-x-1.5 shadow-[0_0_12px_rgba(255,170,0,0.2)]">
+            <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
+            <span>Test Safety Hazard Drill</span>
+          </button>
+          <button onclick="window.weightEngine.exportComplianceReport()" 
+                  class="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono border border-slate-700 flex items-center space-x-1.5">
+            <i data-lucide="download" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>Export Audit Log</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Cargo Weight vs Nullified Weight Calculator -->
+      <div class="hud-card tactical-border p-5 space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800">
+          <div>
+            <h3 class="font-display font-bold text-base text-cyan-400 glow-cyan flex items-center space-x-2">
+              <i data-lucide="gauge" class="w-5 h-5 text-cyan-400"></i>
+              <span>CARGO WEIGHT VS. APPARENT EFFECTIVE WEIGHT MONITOR</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono mt-0.5">Real-time load reduction calculator for dockworkers, riggers, and builders</p>
+          </div>
+
+          <!-- Cargo Presets -->
+          <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono">
+            <span class="text-slate-500 mr-1">Load Presets:</span>
+            <button onclick="window.weightEngine.selectCargoPreset('5-Ton Structural Steel I-Beam', 'Steel', 5000)" 
+                    class="px-2.5 py-1 rounded bg-slate-800 hover:bg-cyan-900/40 text-slate-300 hover:text-cyan-300 border border-slate-700 hover:border-cyan-500/40">
+              5T Steel Beam
+            </button>
+            <button onclick="window.weightEngine.selectCargoPreset('20-Ton Precast Concrete Wall Slab', 'Concrete', 20000)" 
+                    class="px-2.5 py-1 rounded bg-slate-800 hover:bg-cyan-900/40 text-slate-300 hover:text-cyan-300 border border-slate-700 hover:border-cyan-500/40">
+              20T Concrete
+            </button>
+            <button onclick="window.weightEngine.selectCargoPreset('45-Ton Intermodal Shipping Container', 'Freight', 45000)" 
+                    class="px-2.5 py-1 rounded bg-slate-800 hover:bg-cyan-900/40 text-slate-300 hover:text-cyan-300 border border-slate-700 hover:border-cyan-500/40">
+              45T Container
+            </button>
+            <button onclick="window.weightEngine.selectCargoPreset('2.8-Ton Industrial Emergency Generator', 'Machinery', 2800)" 
+                    class="px-2.5 py-1 rounded bg-slate-800 hover:bg-cyan-900/40 text-slate-300 hover:text-cyan-300 border border-slate-700 hover:border-cyan-500/40">
+              2.8T Generator
+            </button>
+          </div>
+        </div>
+
+        <!-- Comparison Display -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Left: Raw Mass & Gravitational Force -->
+          <div class="p-4 rounded-xl bg-slate-950/80 border border-rose-500/30 relative">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-xs font-mono font-bold text-rose-400 uppercase tracking-wider flex items-center space-x-1.5">
+                <i data-lucide="arrow-down" class="w-4 h-4 text-rose-400"></i>
+                <span>Raw Unassisted Gravitational Mass</span>
+              </span>
+              <span id="calc-raw-tons" class="text-xs font-mono font-bold text-slate-400">5.00 Tons</span>
+            </div>
+
+            <div class="my-3 text-center">
+              <div id="calc-raw-mass" class="text-4xl font-mono font-black text-rose-400 glow-rose">5,000 kg</div>
+              <div class="text-xs font-mono text-slate-400 mt-1">Gravitational Force: <strong id="calc-raw-newtons" class="text-slate-200">49,050 N</strong></div>
+            </div>
+
+            <div class="mt-4 p-2.5 bg-rose-950/30 border border-rose-900/50 rounded text-xs text-rose-300 font-mono">
+              ⚠️ Lethal crushing hazard without active field nullification. Requires heavy multi-rig crane.
+            </div>
+          </div>
+
+          <!-- Right: Nullified Effective Mass (Human Handled) -->
+          <div class="p-4 rounded-xl bg-slate-950/80 border border-emerald-500/40 shadow-[0_0_20px_rgba(0,255,157,0.15)] relative">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider flex items-center space-x-1.5">
+                <i data-lucide="feather" class="w-4 h-4 text-emerald-400"></i>
+                <span>Apparent Effective Handled Weight</span>
+              </span>
+              <span id="calc-eff-grams" class="text-xs font-mono font-bold text-emerald-400">(50 grams)</span>
+            </div>
+
+            <div class="my-3 text-center">
+              <div id="calc-eff-kg" class="text-4xl font-mono font-black text-emerald-400 glow-emerald">0.050 kg</div>
+              <div class="text-xs font-mono text-slate-400 mt-1">Effective Felt Force: <strong id="calc-eff-newtons" class="text-slate-200">0.49 N</strong></div>
+            </div>
+
+            <div id="calc-human-comparison" class="mt-4 p-2.5 bg-emerald-950/40 border border-emerald-500/30 rounded text-xs text-emerald-300 font-mono">
+              🪶 Equivalent to holding a single feather or paperclip. Completely weightless!
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Interactive Sliders: Mass & Field Strength -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+          <!-- Mass Slider -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs font-mono">
+              <span class="text-slate-400">Manual Cargo Mass Slider:</span>
+              <span class="text-cyan-300 font-bold" id="calc-cargo-title">5-Ton Structural Steel I-Beam</span>
+            </div>
+            <input type="range" id="raw-mass-slider" min="100" max="50000" step="100" value="5000"
+                   oninput="window.weightEngine.setRawMass(this.value)"
+                   class="w-full accent-cyan-400 cursor-pointer">
+            <div class="flex justify-between text-[10px] font-mono text-slate-500">
+              <span>100 kg (Light Crate)</span>
+              <span>25,000 kg</span>
+              <span>50,000 kg (Extreme Freight)</span>
+            </div>
+          </div>
+
+          <!-- Field Strength Slider -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs font-mono">
+              <span class="text-slate-400">Nullification Field Efficiency:</span>
+              <span id="calc-field-pct" class="text-emerald-400 font-bold">99.999%</span>
+            </div>
+            <input type="range" min="90" max="99.999" step="0.001" value="99.999"
+                   oninput="window.weightEngine.setFieldStrength(this.value)"
+                   class="w-full accent-emerald-400 cursor-pointer">
+            <div class="flex justify-between text-[10px] font-mono text-slate-500">
+              <span>90.000% (Safety Baseline)</span>
+              <span>99.900%</span>
+              <span>99.999% (Quantum Max)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ergonomic Strain Indicator -->
+        <div class="p-3 bg-slate-950/70 rounded-lg border border-slate-800 text-xs font-mono flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="user-check" class="w-4 h-4 text-emerald-400"></i>
+            <span class="text-slate-400">Worker Musculoskeletal Spine Compression:</span>
+            <strong id="calc-spine-strain" class="text-emerald-400 font-bold">0.01% of standard safe limit</strong>
+          </div>
+          <span class="px-2.5 py-0.5 rounded text-[11px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-500/40">
+            OSHA COMPLIANT
+          </span>
+        </div>
+      </div>
+
+      <!-- Worker Safety Status & Crushing Hazard Alerts Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left: Worker Safety Exoskeleton Roster -->
+        <div class="lg:col-span-6 hud-card p-4 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div>
+              <h3 class="font-display font-bold text-sm text-slate-100 flex items-center space-x-2">
+                <i data-lucide="users" class="w-4 h-4 text-cyan-400"></i>
+                <span>WORKER SAFETY STATUS & EXOSKELETON ROSTER</span>
+              </h3>
+              <p class="text-xs text-slate-400 font-mono mt-0.5">Biometric Link · Active Carried Tonnage · Real-time Fatigue Index</p>
+            </div>
+          </div>
+
+          <div id="worker-roster-container" class="space-y-3">
+            <!-- Populated by weightEngine.renderWorkerRoster() -->
+          </div>
+        </div>
+
+        <!-- Right: Crushing Hazard Alerts & Interlocks -->
+        <div class="lg:col-span-6 hud-card p-4 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div>
+              <h3 class="font-display font-bold text-sm text-slate-100 flex items-center space-x-2">
+                <i data-lucide="alert-octagon" class="w-4 h-4 text-amber-400"></i>
+                <span>CRUSHING HAZARD ALERTS & AUTOMATED INTERLOCKS</span>
+              </h3>
+              <p class="text-xs text-slate-400 font-mono mt-0.5">Inertial Decoupling Sensors · Proximity Warning · Zero-Drop Cushion</p>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-amber-950 text-amber-300 border border-amber-500/40">
+              ACTIVE SENSORS
+            </span>
+          </div>
+
+          <div id="crushing-hazard-alerts-container" class="space-y-3">
+            <!-- Populated by weightEngine.renderAlerts() -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Compliance Logs Table -->
+      <div class="hud-card p-4 space-y-3">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+          <div>
+            <h3 class="font-display font-bold text-sm text-slate-100 flex items-center space-x-2">
+              <i data-lucide="file-check" class="w-4 h-4 text-emerald-400"></i>
+              <span>OSHA / ISO-9001-Q AUDIT COMPLIANCE LOGS</span>
+            </h3>
+            <p class="text-xs text-slate-400 font-mono mt-0.5">Automated timestamped verification of all weight-nullified operations</p>
+          </div>
+          <span class="text-xs font-mono text-emerald-400 font-bold">100% AUDIT PASS RATE</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="border-b border-slate-800 text-[11px] font-mono text-slate-400 uppercase">
+                <th class="py-2 px-3">Time</th>
+                <th class="py-2 px-3">Cert Protocol</th>
+                <th class="py-2 px-3">Operator</th>
+                <th class="py-2 px-3">Raw Load</th>
+                <th class="py-2 px-3">Felt Load</th>
+                <th class="py-2 px-3">Spine Strain</th>
+                <th class="py-2 px-3">Compliance Status</th>
+              </tr>
+            </thead>
+            <tbody id="compliance-logs-container">
+              <!-- Populated by weightEngine.renderComplianceLogs() -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL POPUPS -->
+  <!-- ========================================== -->
+
+  <!-- 1. Stretcher Dispatch Modal -->
+  <div id="dispatch-modal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="hud-card tactical-border max-w-md w-full p-6 space-y-4 bg-slate-900 border-cyan-500/50 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center space-x-2">
+          <i data-lucide="send" class="w-5 h-5 text-cyan-400"></i>
+          <h3 class="font-display font-bold text-base text-slate-100">DISPATCH ANTIGRAVITY STRETCHER</h3>
+        </div>
+        <button onclick="document.getElementById('dispatch-modal').classList.add('hidden')" class="text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="window.app.submitDispatchForm(event)" class="space-y-4 text-xs font-mono">
+        <div>
+          <label class="text-slate-400 block mb-1.5">Target Disaster Sector:</label>
+          <select id="dispatch-target-sector" class="w-full p-2.5 rounded bg-slate-950 border border-slate-800 text-slate-200 focus:border-cyan-400 outline-none">
+            <option value="Sector B: Bio-Dome Collapse">Sector B: Bio-Dome Collapse (5 Survivors)</option>
+            <option value="Sector A: Sub-level Ruins">Sector A: Sub-level Ruins (3 Survivors)</option>
+            <option value="Sector C: Reactor Ridge">Sector C: Reactor Ridge (2 Survivors)</option>
+            <option value="Sector D: North Bridge">Sector D: North Bridge (1 Survivor)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-slate-400 block mb-1.5">Patient Triage Priority:</label>
+          <select id="dispatch-triage-code" class="w-full p-2.5 rounded bg-slate-950 border border-slate-800 text-slate-200 focus:border-cyan-400 outline-none">
+            <option value="CODE RED (SPINAL)">CODE RED: Extreme Trauma / Spinal Fracture</option>
+            <option value="CODE YELLOW (INHALATION)">CODE YELLOW: Severe Smoke Inhalation</option>
+            <option value="CODE ORANGE (FRACTURE)">CODE ORANGE: Compound Limb Fracture</option>
+            <option value="CODE GREEN (SHOCK)">CODE GREEN: Mild Injury / Hypothermia</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-slate-400 block mb-1.5">Levitation Damping Preset:</label>
+          <select id="dispatch-damping-preset" class="w-full p-2.5 rounded bg-slate-950 border border-slate-800 text-slate-200 focus:border-cyan-400 outline-none">
+            <option value="Spinal Rigid Active">Spinal Rigid Active (Zero Jostle &lt;0.002G)</option>
+            <option value="Shock Absorption Glide">Shock Absorption Glide (Rough Terrain)</option>
+            <option value="Hyper-Baric Smooth Glide">Hyper-Baric Smooth Glide (Burn / Fragile)</option>
+          </select>
+        </div>
+
+        <div class="pt-3 border-t border-slate-800 flex gap-3">
+          <button type="button" onclick="document.getElementById('dispatch-modal').classList.add('hidden')"
+                  class="flex-1 py-2.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono">
+            Cancel
+          </button>
+          <button type="submit"
+                  class="flex-1 py-2.5 rounded bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-display font-bold tracking-wider uppercase shadow-[0_0_15px_rgba(0,240,255,0.4)]">
+            Confirm Launch
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Quick Action Modal -->
+  <div id="quick-action-modal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="hud-card tactical-border max-w-md w-full p-6 bg-slate-900 border-cyan-500/50 shadow-2xl">
+      <div id="quick-action-modal-body">
+        <!-- Injected via telemetryEngine.openQuickActionModal() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Sector Detail Modal -->
+  <div id="sector-modal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="hud-card tactical-border max-w-md w-full p-6 space-y-4 bg-slate-900 border-amber-500/50 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 id="sector-modal-title" class="font-display font-bold text-base text-amber-400">SECTOR INSPECTION</h3>
+        <button onclick="document.getElementById('sector-modal').classList.add('hidden')" class="text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div id="sector-modal-content"></div>
+    </div>
+  </div>
+
+  <!-- 4. Beam Calibrate Modal -->
+  <div id="beam-calibrate-modal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="hud-card tactical-border max-w-md w-full p-6 bg-slate-900 border-cyan-500/50 shadow-2xl">
+      <div id="beam-calibrate-modal-body">
+        <!-- Injected via debrisEngine.openCalibrateModal() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Safety Audit Export Modal -->
+  <div id="report-export-modal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="hud-card tactical-border max-w-lg w-full p-6 space-y-4 bg-slate-900 border-emerald-500/50 shadow-2xl text-xs font-mono">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center space-x-2">
+          <i data-lucide="award" class="w-5 h-5 text-emerald-400"></i>
+          <h3 class="font-display font-bold text-base text-emerald-400">OSHA QUANTUM SAFETY AUDIT CERTIFICATE</h3>
+        </div>
+        <button onclick="document.getElementById('report-export-modal').classList.add('hidden')" class="text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-3 bg-slate-950 rounded border border-slate-800 space-y-2">
+        <div class="flex justify-between">
+          <span class="text-slate-400">Audit Reference:</span>
+          <span class="text-slate-200 font-bold">SAFESHIFT-2026-Q994</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Certification Standards:</span>
+          <span class="text-emerald-400 font-bold">OSHA 1926.251 / ISO-9001-Q</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Zero-Harm Streak:</span>
+          <span class="text-emerald-400 font-bold">418 Days (0 Lost Time Incidents)</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Quantum Inertial Cushion Integrity:</span>
+          <span class="text-cyan-400 font-bold">100.0% Verified</span>
+        </div>
+      </div>
+
+      <p class="text-slate-300 leading-relaxed">
+        This document certifies that all zero-gravity lift operations, patient extractions, and industrial cargo handlings conducted in Sector 7 maintain zero crushing hazards and meet all high-risk international safety thresholds.
+      </p>
+
+      <div class="pt-3 border-t border-slate-800 flex justify-end gap-2">
+        <button onclick="window.print()" class="px-4 py-2 rounded bg-slate-800 hover:bg-slate-700 text-slate-200">
+          Print PDF
+        </button>
+        <button onclick="document.getElementById('report-export-modal').classList.add('hidden'); window.app.showNotification('Audit log downloaded to local terminal.', 'emerald')" 
+                class="px-4 py-2 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/50">
+          Download Certified Log
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION BANNER -->
+  <div id="toast-notification" class="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-lg border backdrop-blur-md shadow-2xl opacity-0 translate-y-4 pointer-events-none transition-all duration-300 flex items-center space-x-3 text-xs font-mono">
+    <i data-lucide="bell" class="w-4 h-4 text-cyan-400"></i>
+    <span id="toast-message">SafeShift System Online</span>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950/80 py-4 text-center text-xs font-mono text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between gap-2">
+      <div>SafeShift Emergency Portal · Quantum Gravitational Control Systems · Revision 3.4.8</div>
+      <div class="flex items-center space-x-4">
+        <span class="text-slate-600">Keyboard Shortcuts: [1] Rescue [2] Debris [3] Nullifier [M] Sound [ESC] Close</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/telemetry.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/debris.js"></script>
+  <script src="js/nullifier.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
